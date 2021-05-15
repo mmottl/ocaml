@@ -1252,9 +1252,18 @@ AS_IF([$has_c99_float_ops],
   # newlib's fma is intentionally broken (Cygwin64)
   AS_CASE([$target], [x86_64-*-cygwin], [], [AC_DEFINE([HAS_WORKING_FMA])])],
   [AS_IF([test x"$enable_imprecise_c99_float_ops" != "xyes" ],
-    [AC_MSG_ERROR(m4_normalize([
-      C99 float ops unavailable, enable replacements
-      with --enable-imprecise-c99-float-ops]))])])
+    [AS_CASE([$ocaml_cv_cc_vendor],
+      [msvc-*], [AS_IF([test "${ocaml_cv_cc_vendor#msvc-}" -lt 1800 ],
+        [hard_error=false],
+        [hard_error=true])],
+      [hard_error=true])
+     AS_IF([test x"$hard_error" = 'xtrue'],
+       [AC_MSG_ERROR(m4_normalize([
+         C99 float ops unavailable, enable replacements
+         with --enable-imprecise-c99-float-ops]))],
+       [AC_MSG_WARN(m4_normalize([
+         C99 float ops unavailable, replacements enabled
+         (ancient Visual Studio)]))])])])
 
 ## getrusage
 AC_CHECK_FUNC([getrusage], [AC_DEFINE([HAS_GETRUSAGE])])
