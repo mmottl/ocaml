@@ -373,3 +373,30 @@ AC_DEFUN([OCAML_HOST_IS_EXECUTABLE], [
     [assert=false])
   cross_compiling="$old_cross_compiling"
 ])
+
+# This is AC_RUN_IFELSE but taking $host_runnable into account (i.e. if the
+# program can be run, then it is run)
+AC_DEFUN([OCAML_RUN_IFELSE], [
+  old_cross_compiling="$cross_compiling"
+  AS_IF([test "x$host_runnable" = 'xtrue'], [cross_compiling='no'])
+  AC_RUN_IFELSE([$1],[$2],[$3],[$4])
+  cross_compiling="$old_cross_compiling"
+])
+
+AC_DEFUN([OCAML_C99_CHECK_ROUND], [
+  AC_MSG_CHECKING([whether round works])
+  OCAML_RUN_IFELSE(
+    [AC_LANG_SOURCE([[
+#include <math.h>
+int main (void) {
+  static volatile double d = 0.49999999999999994449;
+  return (fpclassify(round(d)) != FP_ZERO);
+}
+    ]])],
+    [AC_MSG_RESULT([yes])
+    AC_DEFINE([HAS_WORKING_ROUND])], [AC_MSG_RESULT([no])],
+    [AS_CASE([$target],
+      [x86_64-w64-mingw32],[AC_MSG_RESULT([cross-compiling; assume not])],
+      [AC_MSG_RESULT([cross-compiling; assume yes])
+      AC_DEFINE([HAS_WORKING_ROUND])])])
+])
