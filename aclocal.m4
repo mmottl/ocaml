@@ -400,3 +400,32 @@ int main (void) {
       [AC_MSG_RESULT([cross-compiling; assume yes])
       AC_DEFINE([HAS_WORKING_ROUND])])])
 ])
+
+AC_DEFUN([OCAML_C99_CHECK_FMA], [
+  AC_MSG_CHECKING([whether fma works])
+  OCAML_RUN_IFELSE(
+    [AC_LANG_SOURCE([[
+#include <math.h>
+int main (void) {
+  /* Tests 264-266 from testsuite/tests/fma/fma.ml. These tests trigger the
+     broken implementations of Cygwin64, mingw-w64 (x86_64) and VS2013. */
+  double d1 = fma(0x3.bd5b7dde5fddap-496,
+                  0x3.bd5b7dde5fddap-496,
+                  -1.0 * 0xd.fc352bc352bap-992);
+  double d2 = fma(0x3.bd5b7dde5fddap-504,
+                  0x3.bd5b7dde5fddap-504,
+                  -1.0 * 0xd.fc352bc352bap-1008);
+  double d3 = fma(0x8p-540,
+                  0x4p-540,
+                  0x4p-1076);
+  return (d1 != 0x1.0989687cp-1044 || d2 != 0x1.0988p-1060 || d3 != 0x8p-1076);
+}
+    ]])],
+    [AC_MSG_RESULT([yes])
+    AC_DEFINE([HAS_WORKING_FMA])], [AC_MSG_RESULT([no])],
+    [AS_CASE([$target],
+      [x86_64-w64-mingw32|x86_64-*-cygwin*],
+        [AC_MSG_RESULT([cross-compiling; assume not])],
+      [AC_MSG_RESULT([cross-compiling; assume yes])
+      AC_DEFINE([HAS_WORKING_FMA])])])
+])
