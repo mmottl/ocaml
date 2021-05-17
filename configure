@@ -14754,18 +14754,31 @@ else
 
 #include <math.h>
 int main (void) {
-  /* Tests 264-266 from testsuite/tests/fma/fma.ml. These tests trigger the
-     broken implementations of Cygwin64, mingw-w64 (x86_64) and VS2013. */
-  double d1 = fma(0x3.bd5b7dde5fddap-496,
-                  0x3.bd5b7dde5fddap-496,
-                  -1.0 * 0xd.fc352bc352bap-992);
-  double d2 = fma(0x3.bd5b7dde5fddap-504,
-                  0x3.bd5b7dde5fddap-504,
-                  -1.0 * 0xd.fc352bc352bap-1008);
-  double d3 = fma(0x8p-540,
-                  0x4p-540,
-                  0x4p-1076);
-  return (d1 != 0x1.0989687cp-1044 || d2 != 0x1.0988p-1060 || d3 != 0x8p-1076);
+  /* Tests 264-266, 273 from testsuite/tests/fma/fma.ml. These tests trigger the
+     broken implementations of Cygwin64, mingw-w64 (x86_64) and VS2013.
+     The static volatile variables aim to thwart GCC's constant folding. */
+  static volatile double x, y, z;
+  double t264, t265, t266, t273;
+  x = 0x3.bd5b7dde5fddap-496;
+  y = 0x3.bd5b7dde5fddap-496;
+  z = -0xd.fc352bc352bap-992;
+  t264 = fma(x, y, z);
+  x = 0x3.bd5b7dde5fddap-504;
+  y = 0x3.bd5b7dde5fddap-504;
+  z = -0xd.fc352bc352bap-1008;
+  t265 = fma(x, y, z);
+  x = 0x8p-540;
+  y = 0x4p-540;
+  z = 0x4p-1076;
+  t266 = fma(x, y, z);
+  x = -0x3.ffffffffffffep-712;
+  y = 0x3.ffffffffffffep-276;
+  z = 0x3.fffffc0000ffep-984;
+  t273 = fma(x, y, z);
+  return (t264 != 0x1.0989687cp-1044
+       || t265 != 0x1.0988p-1060
+       || t266 != 0x8p-1076
+       || t273 != 0x2.fffffc0000ffep-984);
 }
 
 _ACEOF
