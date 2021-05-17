@@ -747,6 +747,8 @@ build_os
 build_vendor
 build_cpu
 build
+emulated_round
+emulated_fma
 naked_pointers_checker
 naked_pointers
 compute_deps
@@ -2810,6 +2812,8 @@ extralibs=
 instrumented_runtime=false
 instrumented_runtime_libs=""
 bootstrapping_flexdll=false
+emulated_fma='false'
+emulated_round='false'
 
 # Information about the package
 
@@ -2910,6 +2914,8 @@ VERSION=4.13.0+dev0-2020-10-19
 
 
  # TODO: rename this variable
+
+
 
 
 
@@ -14684,7 +14690,8 @@ fi
   case $target in #(
   x86_64-w64-mingw32) :
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: cross-compiling; assume not" >&5
-$as_echo "cross-compiling; assume not" >&6; } ;; #(
+$as_echo "cross-compiling; assume not" >&6; }
+        emulated_round='true' ;; #(
   *) :
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: cross-compiling; assume yes" >&5
 $as_echo "cross-compiling; assume yes" >&6; }
@@ -14710,6 +14717,7 @@ $as_echo "yes" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
+    emulated_round='true'
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -14730,9 +14738,10 @@ $as_echo_n "checking whether fma works... " >&6; }
 fi
   if test "$cross_compiling" = yes; then :
   case $target in #(
-  x86_64-w64-mingw32|x86_64-*-cygwin*) :
+  x86_64-w64-mingw32|*-*-cygwin*) :
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: cross-compiling; assume not" >&5
-$as_echo "cross-compiling; assume not" >&6; } ;; #(
+$as_echo "cross-compiling; assume not" >&6; }
+        emulated_fma='true' ;; #(
   *) :
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: cross-compiling; assume yes" >&5
 $as_echo "cross-compiling; assume yes" >&6; }
@@ -14768,6 +14777,7 @@ $as_echo "yes" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
+    emulated_fma='true'
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext

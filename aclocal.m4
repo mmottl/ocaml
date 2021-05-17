@@ -394,9 +394,13 @@ int main (void) {
 }
     ]])],
     [AC_MSG_RESULT([yes])
-    AC_DEFINE([HAS_WORKING_ROUND])], [AC_MSG_RESULT([no])],
+    AC_DEFINE([HAS_WORKING_ROUND])],
+    [AC_MSG_RESULT([no])
+    emulated_round='true'],
     [AS_CASE([$target],
-      [x86_64-w64-mingw32],[AC_MSG_RESULT([cross-compiling; assume not])],
+      [x86_64-w64-mingw32],
+        [AC_MSG_RESULT([cross-compiling; assume not])
+        emulated_round='true'],
       [AC_MSG_RESULT([cross-compiling; assume yes])
       AC_DEFINE([HAS_WORKING_ROUND])])])
 ])
@@ -422,10 +426,13 @@ int main (void) {
 }
     ]])],
     [AC_MSG_RESULT([yes])
-    AC_DEFINE([HAS_WORKING_FMA])], [AC_MSG_RESULT([no])],
+    AC_DEFINE([HAS_WORKING_FMA])],
+    [AC_MSG_RESULT([no])
+    emulated_fma='true'],
     [AS_CASE([$target],
-      [x86_64-w64-mingw32|x86_64-*-cygwin*],
-        [AC_MSG_RESULT([cross-compiling; assume not])],
+      [x86_64-w64-mingw32|*-*-cygwin*],
+        [AC_MSG_RESULT([cross-compiling; assume not])
+        emulated_fma='true'],
       [AC_MSG_RESULT([cross-compiling; assume yes])
       AC_DEFINE([HAS_WORKING_FMA])])])
 ])

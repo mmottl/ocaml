@@ -1,4 +1,6 @@
-(* TEST *)
+(* TEST
+include ocamlcommon
+*)
 
 (* modified glibc's fma() tests *)
 
@@ -500,5 +502,13 @@ let _ =
       (l, x, y, z, r)::t -> fma_test l x y z r;
                             do_cases t
     | [] -> ()
+  in
+  let cases =
+    if Config.emulated_fma then
+      cases
+    else
+      (* Float.fma is using the underlying CRT function, which is required to
+         work properly - remove the emulated fallback cases. *)
+      List.map (fun (t, x, y, z, r) -> (t, x, y, z, [List.hd r])) cases
   in
   do_cases cases

@@ -65,6 +65,8 @@ extralibs=
 instrumented_runtime=false
 instrumented_runtime_libs=""
 bootstrapping_flexdll=false
+emulated_fma='false'
+emulated_round='false'
 
 # Information about the package
 
@@ -171,6 +173,8 @@ AC_SUBST([stdlib_manpages])
 AC_SUBST([compute_deps])
 AC_SUBST([naked_pointers])
 AC_SUBST([naked_pointers_checker])
+AC_SUBST([emulated_fma])
+AC_SUBST([emulated_round])
 
 ## Generated files
 

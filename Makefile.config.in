@@ -244,6 +244,8 @@ FUNCTION_SECTIONS=@function_sections@
 AWK=@AWK@
 STDLIB_MANPAGES=@stdlib_manpages@
 NAKED_POINTERS=@naked_pointers@
+OCAML_C99_USING_EMULATED_FMA=@emulated_fma@
+OCAML_C99_USING_EMULATED_ROUND=@emulated_round@
 
 ### Native command to build ocamlrun.exe
 
